@@ -39,17 +39,19 @@ def create_thread(target):
 
 
 class ServerChat(Chat):
+    My_color = [1, 1, 1, 1]
+    Other_color = [.8,.9,.8,1]
 
     def send_message(self, text):
         if connection_established:
             conn.send(text.encode())
             self.message_field.text = ''
-            self._append_message_to_scroll('Server (me): < {} >'.format(text))
+            self.append_message_to_scroll('Me: {} '.format(text), self.My_color)
         else:
             print('No clients')
             
     def accept_message(self, text):
-        self._append_message_to_scroll('Client: < {} >'.format(text))
+        self.append_message_to_scroll('Client: {} '.format(text), self.Other_color)
             
 
 chat = ServerChat()

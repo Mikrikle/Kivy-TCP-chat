@@ -32,20 +32,22 @@ def create_thread(target):
 
 
 class ClientChat(Chat):
+    My_color = [1, 1, 1, 1]
+    Other_color = [.8,.9,.8,1]
+    
     def send_message(self, text):
         sock.send(text.encode())
         self.message_field.text = ''
-        self._append_message_to_scroll('Client (me): < {} >'.format(text))
+        self.append_message_to_scroll('Me: {} '.format(text), self.My_color)
             
     def accept_message(self, text):
-        self._append_message_to_scroll('Server: < {} >'.format(text))
+        self.append_message_to_scroll('Server: {} '.format(text), self.Other_color)
             
 
 chat = ClientChat()
 class OnlineClientApp(App):
     def build(self):
         return chat
-
 
 
 if __name__ == '__main__':

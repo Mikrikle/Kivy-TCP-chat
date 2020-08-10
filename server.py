@@ -8,10 +8,16 @@ from kivy.graphics import Rectangle, Color
 import random
 from kivy.core.window import Window
 
+#-----------------FAST---SETTINGS-----------------------------#
 
 HOST = '127.0.0.1' 
 PORT = 65432
 MY_NAME = 'Server!'
+MY_COLOR = [1, 1, 1, 1]     # color of your own messages
+OTHER_COLOR = [.8,.9,.8,1]  # color of the interlocutor's messages
+
+#-------------------------------------------------------------#
+
 INTERLOCUTOR_NAME = ''
 connection_established = False
 conn, addr = None, None
@@ -47,19 +53,19 @@ def create_thread(target):
 
 
 class ServerChat(Chat):
-    My_color = [1, 1, 1, 1]
-    Other_color = [.8,.9,.8,1]
-
+    
     def send_message(self, text):
+        global MY_COLOR
         if connection_established:
             conn.send(text.encode())
             self.message_field.text = ''
-            self.append_message_to_scroll('Me: {} '.format(text), self.My_color)
+            self.append_message_to_scroll('Me: {} '.format(text), MY_COLOR)
         else:
             print('No clients')
             
     def accept_message(self, text):
-        self.append_message_to_scroll('{}: {} '.format(INTERLOCUTOR_NAME, text), self.Other_color)
+        global OTHER_COLOR, INTERLOCUTOR_NAME
+        self.append_message_to_scroll('{}: {} '.format(INTERLOCUTOR_NAME, text),  OTHER_COLOR)
             
 
 chat = ServerChat()

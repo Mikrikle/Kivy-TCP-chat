@@ -64,7 +64,8 @@ class ServerChat(Chat):
             self.message_field.text = ''
             self.append_message_to_scroll('Me: {} '.format(text), MY_COLOR)
         else:
-            print('No clients')
+            self.append_message_to_scroll('#:TEST-{}'.format(text), MY_COLOR)
+            self.message_field.text = ''
             
     def accept_message(self, protected_text):
         global OTHER_COLOR, INTERLOCUTOR_NAME

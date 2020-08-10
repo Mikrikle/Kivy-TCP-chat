@@ -10,5 +10,3 @@ def encryptDecrypt(mode, message):
         else:
             final += chr((ord(symbol) - key))
     return final
-
-

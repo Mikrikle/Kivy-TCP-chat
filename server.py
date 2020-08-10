@@ -1,6 +1,8 @@
 import socket
 import threading
 from kivy_chat import Chat
+from encryption import encryptDecrypt
+
 
 from kivy.app import App
 from kivy.uix.widget import Widget
@@ -57,14 +59,16 @@ class ServerChat(Chat):
     def send_message(self, text):
         global MY_COLOR
         if connection_established:
-            conn.send(text.encode())
+            protected_text = encryptDecrypt('E', text)
+            conn.send(protected_text.encode())
             self.message_field.text = ''
             self.append_message_to_scroll('Me: {} '.format(text), MY_COLOR)
         else:
             print('No clients')
             
-    def accept_message(self, text):
+    def accept_message(self, protected_text):
         global OTHER_COLOR, INTERLOCUTOR_NAME
+        text = encryptDecrypt('D', protected_text)
         self.append_message_to_scroll('{}: {} '.format(INTERLOCUTOR_NAME, text),  OTHER_COLOR)
             
 

@@ -12,16 +12,18 @@ HEIGHT = Window.size[1] // 20
 
 
 class MyTextInput(TextInput):
+    '''Enter text with a limited number of characters'''
     max_characters = NumericProperty(0)
     multiline = BooleanProperty(False)
     padding_x = NumericProperty(10)
 
-    def __init__(self, **kwargs):
+    def __init__(self, max_characters, **kwargs):
         super().__init__(**kwargs)
         self.hint_text = 'max 30 symbols'
-    
+        self.max_characters = max_characters
     
     def insert_text(self, substring, from_undo=False):
+        '''crop text'''
         if len(self.text) > self.max_characters and self.max_characters > 0:
             substring = ""
         TextInput.insert_text(self, substring, from_undo)
@@ -33,7 +35,6 @@ class Chat(BoxLayout):
         self.size_hint = (1, 1)
         self.orientation = 'vertical'
         self.messages = GridLayout(cols=1, spacing=10, size_hint_y=None)
-        # Make sure the height is such that there is something to scroll.
         self.messages.bind(minimum_height=self.messages.setter('height'))
         messages_scroll = ScrollView(size_hint=(1, .9), size=(Window.width, Window.height))
         messages_scroll.add_widget(self.messages)
@@ -52,9 +53,11 @@ class Chat(BoxLayout):
         pass
     
     def notification_of_client(self, addr):
+        '''message about updating the contact with the client'''
         message_widget = Button(background_color=(1, .5,.5,1), text='Client {} connected'.format(addr), size_hint_y=None, height=HEIGHT)
         self.messages.add_widget(message_widget)
     
     def append_message_to_scroll(self, text, color):
+        '''displaying a message'''
         message_widget = Label(text=text, size_hint=(1, None),  height=HEIGHT, halign="left", valign="middle", text_size=(self.width, None), color=color, padding_x=10)
         self.messages.add_widget(message_widget)

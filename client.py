@@ -1,5 +1,6 @@
 import socket
 import threading
+
 from kivy_chat import Chat
 from encryption import encryptDecrypt
 

@@ -10,7 +10,9 @@ from kivy.core.window import Window
 
 
 HOST = '127.0.0.1' 
-PORT = 65432        
+PORT = 65432
+MY_NAME = 'Server!'
+INTERLOCUTOR_NAME = ''
 connection_established = False
 conn, addr = None, None
 sock = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
@@ -18,16 +20,22 @@ sock.bind((HOST, PORT))
 sock.listen(1)
 
 def receive_data():
+    global INTERLOCUTOR_NAME
     while True:
         '''recieved data from server'''
-        chat.accept_message(conn.recv(1024).decode())
+        data = conn.recv(1024).decode()
+        if data.startswith('#:Command:Name-'):
+            INTERLOCUTOR_NAME = data.split('-')[1]
+        else:
+            chat.accept_message(data)
 
 def waiting_for_connection():
     '''start listening'''
-    global connection_established, conn, addr
+    global connection_established, conn, addr, MY_NAME
     conn, addr = sock.accept()
     chat.notification_of_client(addr)
     connection_established = True
+    conn.send('#:Command:Name-{}'.format(MY_NAME).encode())
     receive_data()
 
 def create_thread(target):
@@ -51,7 +59,7 @@ class ServerChat(Chat):
             print('No clients')
             
     def accept_message(self, text):
-        self.append_message_to_scroll('Client: {} '.format(text), self.Other_color)
+        self.append_message_to_scroll('{}: {} '.format(INTERLOCUTOR_NAME, text), self.Other_color)
             
 
 chat = ServerChat()
